@@ -1,5 +1,7 @@
 package com.br.customer.controller;
 
+import com.br.customer.dtos.CustomerRequestDTO;
+import com.br.customer.dtos.CustomerResponseDTO;
 import com.br.customer.model.Customer;
 import com.br.customer.service.CustomerService;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +19,12 @@ public class CustomerController {
     }
 
     @GetMapping
-    public List<Customer> getAllCustomers() {
+    public List<CustomerResponseDTO> getAllCustomers() {
         return customerService.getAllCustomers();
     }
 
     @GetMapping("/{id}")
-    public Customer getCustomerById(@PathVariable Long id) {
+    public CustomerResponseDTO getCustomerById(@PathVariable Long id) {
         return customerService.getCustomerById(id);
     }
 
