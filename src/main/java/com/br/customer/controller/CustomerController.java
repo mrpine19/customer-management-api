@@ -4,6 +4,7 @@ import com.br.customer.dtos.CustomerRequestDTO;
 import com.br.customer.dtos.CustomerResponseDTO;
 import com.br.customer.model.Customer;
 import com.br.customer.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,12 +30,12 @@ public class CustomerController {
     }
 
     @PostMapping
-    public CustomerResponseDTO createCustomer(@RequestBody CustomerRequestDTO requestDTO) {
+    public CustomerResponseDTO createCustomer(@Valid @RequestBody CustomerRequestDTO requestDTO) {
         return customerService.createCustomer(requestDTO);
     }
 
     @PutMapping("/{id}")
-    public CustomerResponseDTO updateCustomer(@PathVariable Long id, @RequestBody CustomerRequestDTO requestDTO) {
+    public CustomerResponseDTO updateCustomer(@PathVariable Long id, @Valid @RequestBody CustomerRequestDTO requestDTO) {
         return customerService.updateCustomer(id, requestDTO);
     }
 

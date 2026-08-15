@@ -30,7 +30,6 @@ public record CustomerRequestDTO(
         String phone,
 
         @NotNull(message = "Status is required")
-        @Pattern(regexp = "^(Active|Inactive|Suspended)$", message = "Status must be Active, Inactive, or Suspended.")
         StatusEnum status,
 
         @NotNull(message = "Birth date is required")
