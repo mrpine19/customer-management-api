@@ -28,6 +28,16 @@ public class CustomerController {
         return customerService.getCustomerById(id);
     }
 
+    @PostMapping
+    public CustomerResponseDTO createCustomer(@RequestBody CustomerRequestDTO requestDTO) {
+        return customerService.createCustomer(requestDTO);
+    }
+
+    @PutMapping("/{id}")
+    public CustomerResponseDTO updateCustomer(@PathVariable Long id, @RequestBody CustomerRequestDTO requestDTO) {
+        return customerService.updateCustomer(id, requestDTO);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteCustomerById(@PathVariable Long id) {
         customerService.deleteCustomerById(id);

@@ -1,5 +1,6 @@
 package com.br.customer.service;
 
+import com.br.customer.dtos.CustomerRequestDTO;
 import com.br.customer.dtos.CustomerResponseDTO;
 import com.br.customer.exceptions.CustomerNotFoundException;
 import com.br.customer.mapper.CustomerMapper;
@@ -28,15 +29,26 @@ public class CustomerService {
     }
 
     public CustomerResponseDTO getCustomerById(Long id) {
-        Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + id));
-        return customerMapper.toResponse(customer);
+        return customerMapper.toResponse(findCustomerById(id));
+    }
+
+    public CustomerResponseDTO createCustomer(CustomerRequestDTO requestDTO) {
+        Customer customer = customerMapper.toEntity(requestDTO);
+        return customerMapper.toResponse(customerRepository.save(customer));
+    }
+
+    public CustomerResponseDTO updateCustomer(Long id, CustomerRequestDTO requestDTO) {
+        Customer existingCustomer = findCustomerById(id);
+        customerMapper.updateEntityFromRequest(existingCustomer, requestDTO);
+        return customerMapper.toResponse(customerRepository.save(existingCustomer));
     }
 
     public void deleteCustomerById(Long id) {
-        if (!customerRepository.existsById(id))
-            throw new CustomerNotFoundException("Customer not found with id: " + id);
+        customerRepository.delete(findCustomerById(id));
+    }
 
-        customerRepository.deleteById(id);
+    public Customer findCustomerById(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + id));
     }
 }
