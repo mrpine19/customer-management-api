@@ -10,6 +10,7 @@ import com.br.customer.model.Customer;
 import com.br.customer.model.StatusEnum;
 import com.br.customer.repository.CustomerJdbcRepository;
 import com.br.customer.repository.CustomerRepository;
+import com.br.score.client.ScoreClient;
 import com.br.score.dto.ScoreResponseDTO;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +22,13 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
     private final CustomerJdbcRepository customerJdbcRepository;
+    private final ScoreClient scoreClient;
 
-    public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper, CustomerJdbcRepository customerJdbcRepository) {
+    public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper, CustomerJdbcRepository customerJdbcRepository, ScoreClient scoreClient) {
         this.customerRepository = customerRepository;
         this.customerMapper = customerMapper;
         this.customerJdbcRepository = customerJdbcRepository;
+        this.scoreClient = scoreClient;
     }
 
     public List<CustomerResponseDTO> getAllCustomers(StatusEnum status) {
@@ -46,8 +49,9 @@ public class CustomerService {
     }
 
     public CustomerScoreResponseDTO getCustomerScoreById(Long id) {
-        ScoreResponseDTO scoreResponseDTO = new ScoreResponseDTO("12345678901", 750, "LOW_RISK");
         Customer customer = findCustomerById(id);
+        ScoreResponseDTO scoreResponseDTO = scoreClient.getScoreByCpf(customer.getCpf());
+
         return new CustomerScoreResponseDTO(customer.getId(), customer.getName(), customer.getCpf(), customer.getEmail(), customer.getStatus().name(), scoreResponseDTO);
     }
 
