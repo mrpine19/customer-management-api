@@ -43,4 +43,14 @@ public class CustomerController {
     public void deleteCustomerById(@PathVariable Long id) {
         customerService.deleteCustomerById(id);
     }
+
+    @GetMapping("/search")
+    public List<CustomerResponseDTO> searchByName(@RequestParam String name) {
+        return customerService.searchByName(name);
+    }
+
+    @GetMapping("/status")
+    public List<CustomerResponseDTO> searchByStatus(@RequestParam String status) {
+        return customerService.searchByStatus(status);
+    }
 }

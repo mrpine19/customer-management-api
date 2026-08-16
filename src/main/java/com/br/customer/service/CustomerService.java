@@ -51,4 +51,18 @@ public class CustomerService {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + id));
     }
+
+    public List<CustomerResponseDTO> searchByName(String name) {
+        return customerRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(customerMapper::toResponse)
+                .toList();
+    }
+
+    public List<CustomerResponseDTO> searchByStatus(String status) {
+        return customerRepository.findByStatusIgnoreCase(status)
+                .stream()
+                .map(customerMapper::toResponse)
+                .toList();
+    }
 }
