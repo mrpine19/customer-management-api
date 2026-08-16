@@ -3,6 +3,7 @@ package com.br.customer.service;
 import com.br.customer.dtos.CustomerRequestDTO;
 import com.br.customer.dtos.CustomerResponseDTO;
 import com.br.customer.exceptions.CustomerNotFoundException;
+import com.br.customer.exceptions.DuplicateCpfException;
 import com.br.customer.mapper.CustomerMapper;
 import com.br.customer.model.Customer;
 import com.br.customer.repository.CustomerRepository;
@@ -33,14 +34,24 @@ public class CustomerService {
     }
 
     public CustomerResponseDTO createCustomer(CustomerRequestDTO requestDTO) {
+        validateUniqueCpf(requestDTO.cpf(), null);
+
         Customer customer = customerMapper.toEntity(requestDTO);
         return customerMapper.toResponse(customerRepository.save(customer));
     }
 
     public CustomerResponseDTO updateCustomer(Long id, CustomerRequestDTO requestDTO) {
+        validateUniqueCpf(requestDTO.cpf(), id);
+
         Customer existingCustomer = findCustomerById(id);
         customerMapper.updateEntityFromRequest(existingCustomer, requestDTO);
         return customerMapper.toResponse(customerRepository.save(existingCustomer));
+    }
+
+    private void validateUniqueCpf(String cpf, Long excludeId) {
+        customerRepository.findByCpf(cpf)
+                .filter(c -> !c.getId().equals(excludeId))
+                .ifPresent(c -> { throw new DuplicateCpfException(cpf); });
     }
 
     public void deleteCustomerById(Long id) {

@@ -6,8 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
+
+    Optional<Customer> findByCpf(String cpf);
 
     @Query(value = "SELECT * FROM customer WHERE LOWER(name) LIKE LOWER(CONCAT('%', :name, '%'))", nativeQuery = true)
     List<Customer> findByNameContainingIgnoreCase(@Param("name") String name);
