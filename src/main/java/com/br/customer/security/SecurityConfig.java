@@ -1,5 +1,6 @@
 package com.br.customer.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,7 +21,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+            CustomAccessDeniedHandler customAccessDeniedHandler) {
         return http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/customers/**").hasAnyRole("USER", "ADMIN")
@@ -31,21 +35,29 @@ public class SecurityConfig {
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(withDefaults())
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
 
     @Bean
-    public UserDetailsService user(PasswordEncoder passwordEncoder) {
+    public UserDetailsService user(
+            PasswordEncoder passwordEncoder,
+            @Value("${app.security.user.username:user}") String userUsername,
+            @Value("${app.security.user.password:user123}") String userPassword,
+            @Value("${app.security.admin.username:admin}") String adminUsername,
+            @Value("${app.security.admin.password:admin123}") String adminPassword) {
         UserDetails user = User.builder()
-                .username("user")
-                .password(passwordEncoder.encode("user123"))
+                .username(userUsername)
+                .password(passwordEncoder.encode(userPassword))
                 .roles("USER")
                 .build();
 
         UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("admin123"))
+                .username(adminUsername)
+                .password(passwordEncoder.encode(adminPassword))
                 .roles("ADMIN")
                 .build();
 
