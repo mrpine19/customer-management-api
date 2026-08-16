@@ -2,6 +2,7 @@ package com.br.customer.controller;
 
 import com.br.customer.dtos.CustomerRequestDTO;
 import com.br.customer.dtos.CustomerResponseDTO;
+import com.br.customer.dtos.CustomerScoreResponseDTO;
 import com.br.customer.model.StatusEnum;
 import com.br.customer.service.CustomerService;
 import jakarta.validation.Valid;
@@ -30,6 +31,12 @@ public class CustomerController {
     @ResponseStatus(HttpStatus.OK)
     public CustomerResponseDTO getCustomerById(@PathVariable Long id) {
         return customerService.getCustomerById(id);
+    }
+
+    @GetMapping("/{id}/score")
+    @ResponseStatus(HttpStatus.OK)
+    public CustomerScoreResponseDTO getCustomerScoreById(@PathVariable Long id) {
+        return customerService.getCustomerScoreById(id);
     }
 
     @PostMapping
