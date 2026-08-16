@@ -12,6 +12,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.net.SocketTimeoutException;
+import java.net.http.HttpTimeoutException;
 
 @Component
 public class ScoreClientAdapter {
@@ -26,7 +27,7 @@ public class ScoreClientAdapter {
         try {
             return scoreClient.getScoreByCpf(cpf);
         } catch (ResourceAccessException e) {
-            if (e.getCause() instanceof SocketTimeoutException) {
+            if (e.getCause() instanceof SocketTimeoutException || e.getCause() instanceof HttpTimeoutException) {
                 throw new ScoreServiceTimeoutException("Timeout connecting to score service. Please try again later.");
             }
             throw new ScoreServiceUnavailableException("Error connecting to score service: " + e.getMessage());
