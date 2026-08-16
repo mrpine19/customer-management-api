@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/scores/99988877766"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{ \"cpf\": \"99988877766\", \"score\": "
+  }
+}
+

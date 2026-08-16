@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/scores/11122233344"
+  },
+  "response": {
+    "status": 500,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "message": "Internal score service error"
+    }
+  }
+}
+

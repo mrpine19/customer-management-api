@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/scores/55566677788"
+  },
+  "response": {
+    "status": 200,
+    "fixedDelayMilliseconds": 8000,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "cpf": "55566677788",
+      "score": 420,
+      "classification": "HIGH_RISK"
+    }
+  }
+}
+
