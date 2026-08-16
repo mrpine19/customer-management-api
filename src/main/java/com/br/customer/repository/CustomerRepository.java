@@ -14,7 +14,4 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query(value = "SELECT * FROM customer WHERE LOWER(name) LIKE LOWER(CONCAT('%', :name, '%'))", nativeQuery = true)
     List<Customer> findByNameContainingIgnoreCase(@Param("name") String name);
-
-    @Query(value = "SELECT * FROM customer WHERE LOWER(status) = LOWER(:status)", nativeQuery = true)
-    List<Customer> findByStatusIgnoreCase(@Param("status") String status);
 }

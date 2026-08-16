@@ -6,6 +6,8 @@ import com.br.customer.exceptions.CustomerNotFoundException;
 import com.br.customer.exceptions.DuplicateCpfException;
 import com.br.customer.mapper.CustomerMapper;
 import com.br.customer.model.Customer;
+import com.br.customer.model.StatusEnum;
+import com.br.customer.repository.CustomerJdbcRepository;
 import com.br.customer.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +18,21 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
+    private final CustomerJdbcRepository customerJdbcRepository;
 
-    public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper) {
+    public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper, CustomerJdbcRepository customerJdbcRepository) {
         this.customerRepository = customerRepository;
         this.customerMapper = customerMapper;
+        this.customerJdbcRepository = customerJdbcRepository;
     }
 
-    public List<CustomerResponseDTO> getAllCustomers() {
+    public List<CustomerResponseDTO> getAllCustomers(StatusEnum status) {
+        if (status != null)
+            return customerJdbcRepository.findByStatus(status)
+                    .stream()
+                    .map(customerMapper::toResponse)
+                    .toList();
+
         return customerRepository.findAll()
                 .stream()
                 .map(customerMapper::toResponse)
@@ -65,13 +75,6 @@ public class CustomerService {
 
     public List<CustomerResponseDTO> searchByName(String name) {
         return customerRepository.findByNameContainingIgnoreCase(name)
-                .stream()
-                .map(customerMapper::toResponse)
-                .toList();
-    }
-
-    public List<CustomerResponseDTO> searchByStatus(String status) {
-        return customerRepository.findByStatusIgnoreCase(status)
                 .stream()
                 .map(customerMapper::toResponse)
                 .toList();

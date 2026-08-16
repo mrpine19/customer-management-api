@@ -2,9 +2,10 @@ package com.br.customer.controller;
 
 import com.br.customer.dtos.CustomerRequestDTO;
 import com.br.customer.dtos.CustomerResponseDTO;
-import com.br.customer.model.Customer;
+import com.br.customer.model.StatusEnum;
 import com.br.customer.service.CustomerService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,37 +21,38 @@ public class CustomerController {
     }
 
     @GetMapping
-    public List<CustomerResponseDTO> getAllCustomers() {
-        return customerService.getAllCustomers();
+    @ResponseStatus(HttpStatus.OK)
+    public List<CustomerResponseDTO> getAllCustomers(@RequestParam(required = false) StatusEnum status) {
+        return customerService.getAllCustomers(status);
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public CustomerResponseDTO getCustomerById(@PathVariable Long id) {
         return customerService.getCustomerById(id);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CustomerResponseDTO createCustomer(@Valid @RequestBody CustomerRequestDTO requestDTO) {
         return customerService.createCustomer(requestDTO);
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public CustomerResponseDTO updateCustomer(@PathVariable Long id, @Valid @RequestBody CustomerRequestDTO requestDTO) {
         return customerService.updateCustomer(id, requestDTO);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCustomerById(@PathVariable Long id) {
         customerService.deleteCustomerById(id);
     }
 
     @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
     public List<CustomerResponseDTO> searchByName(@RequestParam String name) {
         return customerService.searchByName(name);
-    }
-
-    @GetMapping("/status")
-    public List<CustomerResponseDTO> searchByStatus(@RequestParam String status) {
-        return customerService.searchByStatus(status);
     }
 }
