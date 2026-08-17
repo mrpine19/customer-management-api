@@ -1,4 +1,4 @@
-                                                                        # Customer Management API
+# Customer Management API
 
 ## 1. Visão Geral
 
@@ -352,4 +352,4 @@ As seguintes propriedades podem ser configuradas via variáveis de ambiente para
 
 - Email: [mrpine19@gmail.com](mailto:mrpine19@gmail.com)
 - GitHub: [@mrpine19](https://github.com/mrpine19)
-- LinkedIn: [www.linkedin.com/in/gustavo-pinheiro-de-oliveira-0165281b5]
+- LinkedIn: www.linkedin.com/in/gustavo-pinheiro-de-oliveira-0165281b5
