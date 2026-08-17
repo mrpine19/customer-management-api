@@ -1,5 +1,6 @@
 package com.br.customer.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+@Slf4j
 @Configuration
 public class SecurityConfig {
 
@@ -24,8 +26,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
-            CustomAccessDeniedHandler customAccessDeniedHandler) {
-        return http
+            CustomAccessDeniedHandler customAccessDeniedHandler) throws Exception {
+        log.info("Configuring security filter chain.");
+        http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/customers/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/customers/**").hasRole("ADMIN")
@@ -35,11 +38,14 @@ public class SecurityConfig {
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(withDefaults())
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .build();
+                .exceptionHandling(ex -> {
+                    log.info("Configuring custom exception handling for authentication and authorization.");
+                    ex.authenticationEntryPoint(customAuthenticationEntryPoint);
+                    ex.accessDeniedHandler(customAccessDeniedHandler);
+                })
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        log.info("Security filter chain configured successfully.");
+        return http.build();
     }
 
     @Bean
@@ -49,6 +55,7 @@ public class SecurityConfig {
             @Value("${app.security.user.password:user123}") String userPassword,
             @Value("${app.security.admin.username:admin}") String adminUsername,
             @Value("${app.security.admin.password:admin123}") String adminPassword) {
+        log.info("Initializing in-memory user details service with a default user and admin.");
         UserDetails user = User.builder()
                 .username(userUsername)
                 .password(passwordEncoder.encode(userPassword))
