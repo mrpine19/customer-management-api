@@ -2,6 +2,7 @@ package com.br.customer.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
@@ -20,6 +22,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException {
+        log.warn("Unauthenticated access attempt to '{}'. Path: {}. Message: {}",
+                request.getMethod(), request.getRequestURI(), authException.getMessage());
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
@@ -27,12 +32,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                 "timestamp", LocalDateTime.now().toString(),
                 "status", HttpServletResponse.SC_UNAUTHORIZED,
                 "error", "Unauthorized",
-                "message", "You are not authenticated to access this resource",
+                "message", "Authentication is required to access this resource.",
                 "path", request.getRequestURI()
         );
 
         objectMapper.writeValue(response.getOutputStream(), body);
     }
 }
-
-
