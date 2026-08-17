@@ -4,6 +4,7 @@ import com.br.customer.dtos.CustomerRequestDTO;
 import com.br.customer.dtos.CustomerResponseDTO;
 import com.br.customer.dtos.CustomerScoreResponseDTO;
 import com.br.customer.model.StatusEnum;
+import com.br.score.service.CustomerScoreService;
 import com.br.customer.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -16,9 +17,11 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final CustomerScoreService customerScoreService;
 
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, CustomerScoreService customerScoreService) {
         this.customerService = customerService;
+        this.customerScoreService = customerScoreService;
     }
 
     @GetMapping
@@ -36,7 +39,7 @@ public class CustomerController {
     @GetMapping("/{id}/score")
     @ResponseStatus(HttpStatus.OK)
     public CustomerScoreResponseDTO getCustomerScoreById(@PathVariable Long id) {
-        return customerService.getCustomerScoreById(id);
+        return customerScoreService.getCustomerScoreById(id);
     }
 
     @PostMapping

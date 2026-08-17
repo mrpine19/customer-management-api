@@ -2,7 +2,6 @@ package com.br.customer.service;
 
 import com.br.customer.dtos.CustomerRequestDTO;
 import com.br.customer.dtos.CustomerResponseDTO;
-import com.br.customer.dtos.CustomerScoreResponseDTO;
 import com.br.customer.exceptions.CustomerNotFoundException;
 import com.br.customer.exceptions.DuplicateCpfException;
 import com.br.customer.mapper.CustomerMapper;
@@ -10,8 +9,6 @@ import com.br.customer.model.Customer;
 import com.br.customer.model.StatusEnum;
 import com.br.customer.repository.CustomerJdbcRepository;
 import com.br.customer.repository.CustomerRepository;
-import com.br.score.adapter.ScoreClientAdapter;
-import com.br.score.dto.ScoreResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,13 +19,11 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
     private final CustomerJdbcRepository customerJdbcRepository;
-    private final ScoreClientAdapter scoreClientAdapter;
 
-    public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper, CustomerJdbcRepository customerJdbcRepository, ScoreClientAdapter scoreClientAdapter) {
+    public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper, CustomerJdbcRepository customerJdbcRepository) {
         this.customerRepository = customerRepository;
         this.customerMapper = customerMapper;
         this.customerJdbcRepository = customerJdbcRepository;
-        this.scoreClientAdapter = scoreClientAdapter;
     }
 
     public List<CustomerResponseDTO> getAllCustomers(StatusEnum status) {
@@ -48,12 +43,6 @@ public class CustomerService {
         return customerMapper.toResponse(findCustomerById(id));
     }
 
-    public CustomerScoreResponseDTO getCustomerScoreById(Long id) {
-        Customer customer = findCustomerById(id);
-        ScoreResponseDTO scoreResponseDTO = scoreClientAdapter.getScoreByCpf(customer.getCpf());
-
-        return new CustomerScoreResponseDTO(customer.getId(), customer.getName(), customer.getCpf(), customer.getEmail(), customer.getStatus().name(), scoreResponseDTO);
-    }
 
     public CustomerResponseDTO createCustomer(CustomerRequestDTO requestDTO) {
         validateUniqueCpf(requestDTO.cpf(), null);
