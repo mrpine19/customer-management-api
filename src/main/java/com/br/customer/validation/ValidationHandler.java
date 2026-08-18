@@ -39,7 +39,7 @@ public class ValidationHandler {
         String errorDetails = errors.stream()
                 .map(error -> String.format("%s: %s", error.field(), error.message()))
                 .collect(Collectors.joining(", "));
-        log.warn("Request validation failed. Details: {}", errorDetails, exception);
+        log.warn("Request validation failed. Details: {}", errorDetails);
         return ResponseEntity.badRequest().body(errors);
     }
 
@@ -95,8 +95,9 @@ public class ValidationHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception exception) {
+        String message = exception.getMessage() == null ? "null" : exception.getMessage();
         log.error("An unexpected error occurred.", exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse("An unexpected internal server error occurred.", HttpStatus.INTERNAL_SERVER_ERROR.value()));
+                .body(new ErrorResponse("Internal server error: " + message, HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 }
